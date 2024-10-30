@@ -18,10 +18,10 @@ const saltRounds = 10;
 
 // POST /auth/signup  - Creates a new user in the database
 router.post("/signup", (req, res, next) => {
-  const { fullName, username, password, confirmPassword, gender } = req.body;
+  const { username, password, confirmPassword } = req.body;
 
   // Check if email or password or name are provided as empty strings
-  if (!fullName || !username || !password || !confirmPassword || !gender) {
+  if (!username || !password || !confirmPassword) {
     return res.status(400).json({ message: "Please fill in all the details." });
   }
   
@@ -64,18 +64,17 @@ if (password !== confirmPassword) {
 
       // Create the new user in the database
       // We return a pending promise, which allows us to chain another `then`
-      return User.create({ fullName, username, password: hashedPassword, gender });
+      return User.create({ username, password: hashedPassword });
     })
     .then((createdUser) => {
       // Deconstruct the newly created user object to omit the password
       // We should never expose passwords publicly
-      const { username, fullName, _id } = createdUser;
-
+      
       // Create a new object that doesn't expose the password
-      const user = { username, fullName, _id };
+      const { username, _id } = createdUser;
 
       // Send a json response containing the user object
-      res.status(201).json({ user: user });
+      res.status(201).json({ user: { username, _id } });
     })
     .catch((err) => next(err)); // In this case, we send error handling to the error handling middleware.
 });
@@ -107,7 +106,7 @@ router.post("/login", (req, res, next) => {
         const {  _id, username, fullName  } = foundUser;
 
         // Create an object that will be set as the token payload
-        const payload = { _id, username, fullName };
+        const payload = { _id, username };
 
         // Create a JSON Web Token and sign it
         const authToken = jwt.sign(payload, process.env.TOKEN_SECRET, {
