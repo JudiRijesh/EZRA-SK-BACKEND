@@ -22,6 +22,9 @@ const authRoutes = require("./routes/auth.routes");
 app.use("/auth", authRoutes);
 
 
+const cartRoutes = require("./routes/cart.routes")
+app.use("/cart", cartRoutes)
+
 app.use('/',require('./routes/contact.routes.js'))
 app.use('/',require('./routes/become.routes.js'))
 
