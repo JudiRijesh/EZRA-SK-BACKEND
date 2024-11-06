@@ -8,10 +8,10 @@ const cartSchema = new Schema({
     ref: 'User', 
     required: true
    },
-    items:
+    services:
     [{ 
-    type: Schema.Types.ObjectId, 
-    ref: 'CartItem' 
+    name:String,
+    description:String
   }],
     createdAt: 
     { 
