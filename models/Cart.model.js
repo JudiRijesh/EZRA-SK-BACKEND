@@ -8,11 +8,16 @@ const cartSchema = new Schema({
     ref: 'User', 
     required: true
    },
-    services:
-    [{ 
-    name:String,
-    description:String
-  }],
+   services: [
+    {
+      name: String,
+      description: String,
+      time: {
+        type: String,
+        default: "09:00" 
+      }
+    }
+  ],
     createdAt: 
     { 
     type: Date,

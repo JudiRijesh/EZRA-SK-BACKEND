@@ -80,5 +80,37 @@ router.delete('/cart/:serviceId', isAuthenticated, async (req, res) => {
   }
 })
 
+//update the time in the cart
+
+router.put('/cart/:serviceId/time', isAuthenticated, async (req, res) => {
+  console.log("ïn route")
+  const { _id } = req.payload; 
+  const { serviceId } = req.params; 
+  const { time } = req.body;
+
+  try {
+    const cart = await Cart.findOne({ userId: _id });
+
+    if (!cart) {
+      console.log("cart not found")
+      return res.status(404).json({ error: "Cart not found" });
+    }
+
+    const service = cart.services.id(serviceId); 
+    if (!service) {
+      console.log("service not found")
+      return res.status(404).json({ error: "Service not found in your cart" });
+    }
+
+    // Update the time for the specific service
+    service.time = time;
+    await cart.save();
+
+    res.status(200).json({ message: "Time updated successfully", cart });
+  } catch (err) {
+    console.error("Error updating time in cart:", err);
+    res.status(500).json({ error: "Failed to update time", details: err });
+  }
+});
 
 module.exports = router;
